@@ -1,0 +1,35 @@
+{
+  "name": "sneaker-app",
+  "version": "0.1.0",
+  "description": "This is an app made with NodeJS to manage an sneaker store inventory.",
+  "main": "src/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DannyB935/Sneaker-App.git"
+  },
+  "author": "Daniel Bustos Ruiz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DannyB935/Sneaker-App/issues"
+  },
+  "homepage": "https://github.com/DannyB935/Sneaker-App#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "connect-flash": "^0.1.1",
+    "dotenv": "^16.0.1",
+    "ejs": "^3.1.8",
+    "express": "^4.18.1",
+    "express-session": "^1.17.3",
+    "express-validator": "^6.14.2",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0",
+    "promise-mysql": "^5.2.0"
+  },
+  "devDependencies": {
+    "electron": "^20.0.1"
+  }
+}
