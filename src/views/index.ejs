@@ -8,7 +8,26 @@
 </head>
 <body>
     
-    <h3>Es el index</h3>
+    <div class="login-page">
+
+        <h2>Inicia Sesión</h2>
+        <form name="login-form" id="login-form" action="/" method="POST">
+
+            <input type="text" name="user" placeholder="Escriba el nombre de usuario"/>
+           
+            <% if(typeof errorL != 'undefined'){ %>
+
+                <p> <%= errorL %> </p>
+
+            <% } %>
+
+            <input type="password" name="password" placeholder="Escriba la contraseña"/>
+
+            <input type="submit" value="Iniciar Sesión"/>
+
+        </form>
+
+    </div>
 
 </body>
 </html>

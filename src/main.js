@@ -7,11 +7,14 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('passport');
 
+require('dotenv').config({ path: 'src/.env' })
+
 //*Auth and DB connections
+require('./database');
 
 //*Server settings
 expressApp.set('views', path.join(__dirname, 'views'));
-expressApp.set('port', process.env.PORT || 4000);
+expressApp.set('port', process.env.PORT);
 expressApp.set('view engine', 'ejs');
 
 //*Middlewares
@@ -48,7 +51,7 @@ function createWindow(){
         webPreferences: true
     })
 
-    window.loadURL('http://localhost:4000/');
+    window.loadURL('http://localhost:'+process.env.PORT+'/');
 
 }
 
