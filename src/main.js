@@ -11,6 +11,7 @@ require('dotenv').config({ path: 'src/.env' })
 
 //*Auth and DB connections
 require('./database');
+require('./auth');
 
 //*Server settings
 expressApp.set('views', path.join(__dirname, 'views'));
@@ -30,7 +31,13 @@ expressApp.use(passport.initialize());
 expressApp.use(passport.session());
 //*Middleware for flash messages
 
-//
+expressApp.use((req, res, next)=>{
+
+    //*We use locals to get the arrays with the error messages that we use
+    expressApp.locals.loginErrors = req.flash('errorLogin');
+    next();
+     
+});
 
 //* Routes
 expressApp.use('/', require('./routes/server'));
