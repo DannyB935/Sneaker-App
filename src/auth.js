@@ -1,69 +1,66 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const { createUser, checkUser } = require('./database');
 const { getConnection } = require('./database');
 const bcrypt = require('bcrypt');
 const flash = require('connect-flash');
 
+//*Serialize user
 passport.serializeUser((user, done)=>{
-    console.log('Serialize user');
-    done(null, user);
+    done(null, user.username);
 });
 
-
+//*Checks if the user exists in database
 passport.deserializeUser(async (user, done)=>{
-    //*Checks if the user exists on the database and use the username to deserialize
-    console.log('Deserialize User');
-    const connection = await getConnection();
-    const queryRes = await connection.query("SELECT * FROM users WHERE username='"+user.username+"' and deleted=0;");
 
-    //*Need to fix if it cant find the user
+    const connection = await getConnection();
+    const queryRes = await connection.query("SELECT * FROM users WHERE username='"+user+"' and deleted=0;");
+
     if(queryRes.length >= 1){
 
         done(null, user);
     }
 
-    return done(null, false);
-
 });
 
+//*Login Strategy
 passport.use('login', new LocalStrategy({
-
-    usernameField: "user",
-    passwordField: "password",
+    usernameField: 'user',
+    passwordField: 'password',
     passReqToCallback: true
+}, async(req, user, password, done)=>{
 
-    },
-    async (req, user, password, done)=>{
+    const connection = await getConnection();
+    //*Checks if the user exists
+    const rowsLogin = await connection.query("SELECT * FROM users WHERE username='"+user+"' and deleted=0");
+    
+    if(rowsLogin.length >= 1){
 
-        const connection = await getConnection();
-        const rows = await connection.query("SELECT * FROM users WHERE username='"+user+"' and deleted=0;");
+        //*Gets the hashed password from database
+        const hashedPassword = rowsLogin[0].password;
+        
+        //*Compares the hashed password with the password input
+        if(bcrypt.compareSync(password, hashedPassword)){
+            console.log("Login success");
+            
+            const newUser = {
 
-        //*If the query finds the user, we have to check if is the same password
-        if(rows.length >= 1){
-            const hashedPasswordDB = rows[0].password;
-
-            //*If the passwords match we send a success login
-            if(bcrypt.compareSync(password, hashedPasswordDB)){
-                console.log('Log in success');
-                const loggedUser = {
-                    username: rows[0].username,
-                    password: rows[0].password
-                }
-
-                done(null, loggedUser);
-
-            }else{
-
-                //*If the password is incorrect we send a message to the index
-                return done(null, false, req.flash('errorLogin', 'El ususario o la contraseña son incorrectos'));
+                username: rowsLogin[0].username,
+                password: rowsLogin[0].password
 
             }
-        }else{
 
-            //*If the user is incorrect we create a flash message to show on the index/log in page
-            return done(null, false, req.flash('errorLogin', 'El ususario o la contraseña son incorrectos'));
+            //*Serialize the user
+            done(null, newUser);
+        }else{
+            
+            return done(null, false, req.flash('errorLogin', 'El usuario o la contraseña son incorrectos'));
+
         }
+    }else{
+
+        return done(null, false, req.flash('errorLogin','El usuario o la contraseña son incorrectos'));
 
     }
 
-));
+}));
