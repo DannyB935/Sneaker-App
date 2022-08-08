@@ -22,6 +22,8 @@ passport.deserializeUser(async (user, done)=>{
         done(null, user);
     }
 
+    return done(null, false);
+
 });
 
 passport.use('login', new LocalStrategy({
