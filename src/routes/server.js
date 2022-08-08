@@ -39,7 +39,13 @@ router.post('/',
 
 router.get('/sneaker-list',(req, res, next)=>{
 
-    res.render('sneakerList');
+    
+    //*Checks if the user has been authenticated
+    if(req.isAuthenticated()){
+        res.render('sneakerList');
+    }else{
+        res.redirect('/');
+    }
 
 });
 
