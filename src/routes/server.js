@@ -23,13 +23,13 @@ router.post('/',
             res.render('index', {errorL: "Usuario debe contener minimo 5 caracteres, maximo 20"});
         }else{
 
-            next();
+            return next();
         }
     },
     //*Use passport to check if the user exists
     passport.authenticate('login',{
-        successRedirect: '/sneaker-list',
-        failureRedirect: '/sneaker-list',
+        successRedirect: '/sneakerList',
+        failureRedirect: '/',
         passReqToCallback: true
     })
 
@@ -37,12 +37,13 @@ router.post('/',
 
 //* Sneakers list
 
-router.get('/sneaker-list',(req, res, next)=>{
-
+router.get('/sneakerList', async (req, res, next)=>{
     
-    //*Checks if the user has been authenticated
     if(req.isAuthenticated()){
-        res.render('sneakerList');
+        const connection = await getConnection();
+        const adminList = await connection.query("SELECT * FROM users WHERE deleted=0");
+
+        res.render('sneakerList', {list: adminList});
     }else{
         res.redirect('/');
     }
