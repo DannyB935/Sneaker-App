@@ -1,9 +1,7 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const { createUser, checkUser } = require('./database');
 const { getConnection } = require('./database');
 const bcrypt = require('bcrypt');
-const flash = require('connect-flash');
 
 //*Serialize user
 passport.serializeUser((user, done)=>{

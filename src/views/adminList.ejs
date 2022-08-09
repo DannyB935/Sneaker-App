@@ -21,7 +21,17 @@
 
     </nav>
 
-    <a href="/add">Añadir Tenis</a>
+    <a href="/addAdmin">Nuevo Admin</a>
+
+    <% if(typeof list != 'undefined'){ %>
+
+        <% list.forEach((admin)=>{  %>
+            
+            <p><%= admin.username %></p>
+
+        <% }); %>
+
+    <% } %>
 
 </body>
 </html>
