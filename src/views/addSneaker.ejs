@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar</title>
+</head>
+<body>
+    
+    <nav>
+
+        <ul style="display: inline-block;">
+
+            <li> <a href="/sneakerList"> Logo </a> </li>
+            <li> <a href="/adminList"> Administradores </a> </li>
+            <li> <a href="/sneakerList"> Productos </a> </li>
+            <li> <a href="#"> Salir </a> </li>
+
+        </ul>
+
+    </nav>
+
+    <form id="newSneaker" name="newSneaker" action="/add" method="POST" enctype="multipart/form-data">
+
+        <p>
+            <label for="name">Nombre: </label>
+            <input type="text" name="name" placeholder="Escriba el nombre de los tenis"/>
+        </p>
+
+        <p>
+            <label for="brand">Marca: </label>
+            <input type="text" name="brand" placeholder="Escriba la marca de los tenis"/>
+        </p>
+
+        <p>
+            <label for="size">Talla: </label>
+            <input type="text" name="size" placeholder="Escriba una talla"/>
+        </p>
+
+        <p>
+            <label for="price">Precio: </label>
+            <input type="text" name="price" placeholder="Escriba el precio (Ej: 999.99)"/>
+        </p>
+
+        <p>
+            <label for="stock">Unidades: </label>
+            <input type="number" name="stock" placeholder="Escriba el numero de unidades"/>
+        </p>
+
+        <p>
+            <label for="image">Imagen: </label>
+            <input type="file" name="image"/>
+        </p>
+        
+        <input type="submit" value="Enviar"/>
+
+        <% if(typeof errorMsg != 'undefined'){ %>
+
+            <p> <%= errorMsg %> </p>
+
+        <% } %>
+
+    </form>
+
+</body>
+</html>

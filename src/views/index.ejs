@@ -25,9 +25,9 @@
 
             <input type="submit" value="Iniciar Sesión"/>
 
-            <% if(typeof errorLogin != 'undefined' && errorLogin.length > 0){ %>
+            <% if(typeof loginErrors != 'undefined' && loginErrors.length > 0){ %>
 
-                <p> <%= errorLogin %> </p>
+                <p> <%= loginErrors[0] %> </p>
 
             <% } %>
 

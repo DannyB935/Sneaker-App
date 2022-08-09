@@ -6,6 +6,8 @@ const path = require('path');
 const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('passport');
+const multer = require('multer');
+const hash = require('crypto-js/md5');
 
 require('dotenv').config({ path: 'src/.env' })
 
@@ -20,7 +22,8 @@ expressApp.set('view engine', 'ejs');
 
 //*Middlewares
 expressApp.use(express.static(__dirname + '/public'));
-expressApp.use(express.urlencoded({extended: false}));
+expressApp.use(express.urlencoded({extended: true}));
+
 expressApp.use(session({
     secret: 'secretKey',
     saveUninitialized: false,
