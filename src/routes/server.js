@@ -36,8 +36,6 @@ router.get('/', (req, res, next)=>{
     res.render('index');
 });
 
-//! REDIRECT TO SNEAKER LIST WHEN EVERYTHING WORKS
-
 router.post('/', 
 
     body('user').isLength({min: 5, max: 20}),
@@ -55,7 +53,7 @@ router.post('/',
     },
     //!Use passport to check if the user exists
     passport.authenticate('login',{
-        successRedirect: '/adminList',
+        successRedirect: '/sneakerList',
         failureRedirect: '/',
         passReqToCallback: true
     })
@@ -80,7 +78,11 @@ router.get('/adminList', async (req, res, next)=>{
 //*Add Admin
 router.get('/addAdmin', (req, res, next)=>{
 
-    res.render('addAdmin');
+    if(req.isAuthenticated()){
+        res.render('addAdmin');
+    }else{
+        res.redirect('/');
+    }
 
 });
 
@@ -120,14 +122,18 @@ router.post('/addAdmin',
 //! ADD AN ALERT TO CONFIRM
 router.get('/delete-admin/:id', async(req, res, next)=>{
 
-    //*Checks if the url gets a parameter 
-    if(req.params){
+    if(req.isAuthenticated()){
+        //*Checks if the url gets a parameter 
+        if(req.params){
 
-        const connection = await getConnection();
-        const deleteRes = await connection.query("UPDATE users SET deleted=1 WHERE id="+req.params.id);
+            const connection = await getConnection();
+            const deleteRes = await connection.query("UPDATE users SET deleted=1 WHERE id="+req.params.id);
 
-        res.redirect('/adminList');
+            res.redirect('/adminList');
 
+        }
+    }else{
+        res.redirect('/');
     }
 
 });
@@ -136,18 +142,22 @@ router.get('/delete-admin/:id', async(req, res, next)=>{
 
 router.get('/edit-admin/:id', async(req, res, next)=>{
 
-    if(req.params){
+    if(req.isAuthenticated()){
+        if(req.params){
 
-        const connection = await getConnection();
-        const adminRow = await connection.query("SELECT * FROM users WHERE id="+req.params.id);
-
-        const admin = {
-            id: req.params.id,
-            user: adminRow[0].username
+            const connection = await getConnection();
+            const adminRow = await connection.query("SELECT * FROM users WHERE id="+req.params.id);
+    
+            const admin = {
+                id: req.params.id,
+                user: adminRow[0].username
+            }
+    
+            res.render('editAdmin', { admin });
+    
         }
-
-        res.render('editAdmin', { admin });
-
+    }else{
+        res.redirect('/');
     }
 
 });
@@ -265,15 +275,19 @@ router.post('/add',
 //! ADD AN ALERT TO CONFIRM DELETE
 router.get('/delete-sneaker/:id', async(req, res, next)=>{
 
-    //*Check if the id was sent
-    if(req.params){
+    if(req.isAuthenticated()){
+        //*Check if the id was sent
+        if(req.params){
 
-        const connection = await getConnection();
-        const deleteRes = await connection.query("UPDATE sneaker SET deleted=1 WHERE id="+req.params.id);
+            const connection = await getConnection();
+            const deleteRes = await connection.query("UPDATE sneaker SET deleted=1 WHERE id="+req.params.id);
 
-        //!Add a message to confirm it was deleted
-        res.redirect('/sneakerList');
+            //!Add a message to confirm it was deleted
+            res.redirect('/sneakerList');
 
+        }
+    }else{
+        res.redirect('/');
     }
 
 });
@@ -319,6 +333,18 @@ router.post('/edit-sneaker/:id',
 
         //! ADD A CONFIRM MESSAGE
         res.redirect('/sneakerList');
+});
+
+//* Log Out route
+router.get('/logout', (req, res, next)=>{
+    req.session.destroy(()=>{
+        req.logOut((error)=>{
+            if(error){
+                console.log(error);
+            }
+            res.redirect('/');
+        });
+    });
 });
 
 module.exports = router;

@@ -47,7 +47,7 @@ expressApp.use('/', require('./routes/server'));
 
 //* Server starts
 expressApp.listen(expressApp.get('port'), ()=>{
-    console.log('Server is ready on localhost:',expressApp.get('port'));
+    //console.log('Server is ready on localhost:',expressApp.get('port'));
 });
 
 //*Electron starts
@@ -56,11 +56,12 @@ var window;
 function createWindow(){
 
     window = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 1280,
+        height: 720,
         webPreferences: true
     })
 
+    window.removeMenu();
     window.loadURL('http://localhost:'+process.env.PORT+'/');
 
 }
