@@ -36,6 +36,8 @@ router.get('/', (req, res, next)=>{
     res.render('index');
 });
 
+//! REDIRECT TO SNEAKER LIST WHEN EVERYTHING WORKS
+
 router.post('/', 
 
     body('user').isLength({min: 5, max: 20}),
@@ -114,12 +116,77 @@ router.post('/addAdmin',
     
 });
 
+//* Delete Admin
+//! ADD AN ALERT TO CONFIRM
+router.get('/delete-admin/:id', async(req, res, next)=>{
+
+    //*Checks if the url gets a parameter 
+    if(req.params){
+
+        const connection = await getConnection();
+        const deleteRes = await connection.query("UPDATE users SET deleted=1 WHERE id="+req.params.id);
+
+        res.redirect('/adminList');
+
+    }
+
+});
+
+//* Edit Admin
+
+router.get('/edit-admin/:id', async(req, res, next)=>{
+
+    if(req.params){
+
+        const connection = await getConnection();
+        const adminRow = await connection.query("SELECT * FROM users WHERE id="+req.params.id);
+
+        const admin = {
+            id: req.params.id,
+            user: adminRow[0].username
+        }
+
+        res.render('editAdmin', { admin });
+
+    }
+
+});
+
+router.post('/update-admin/:id', async(req, res, next)=>{
+
+    const connection = await getConnection();
+    let queryUpdate = "UPDATE users SET username='"+req.body.user+"'";
+
+    //* Check if the password was updated or not
+    if(req.body.password != ''){
+
+        //*If the password was updated
+
+        let salt = bcrypt.genSaltSync(15);
+        let newHashedPassword = bcrypt.hashSync(req.body.password, salt);
+
+        queryUpdate = queryUpdate + ", password='" + newHashedPassword + "'";
+
+    }
+
+    queryUpdate = queryUpdate + " WHERE id="+req.params.id;
+
+    const updateRes = await connection.query(queryUpdate);
+
+    //* Add a message to confirm the update
+    res.redirect('/adminList');
+
+});
+
 //* Sneakers list
 
-router.get('/sneakerList', (req, res, next)=>{
+router.get('/sneakerList', async (req, res, next)=>{
 
+    const connection = await getConnection();
+    const sneakerList = await connection.query("SELECT * FROM sneaker WHERE deleted=0;");
+    
     if(req.isAuthenticated()){
-        res.render('sneakerList');
+        res.render('sneakerList', { sneakerList });
     }else{
         res.redirect('/');
     }
@@ -193,5 +260,65 @@ router.post('/add',
         
     }
 );
+
+//* Delete
+//! ADD AN ALERT TO CONFIRM DELETE
+router.get('/delete-sneaker/:id', async(req, res, next)=>{
+
+    //*Check if the id was sent
+    if(req.params){
+
+        const connection = await getConnection();
+        const deleteRes = await connection.query("UPDATE sneaker SET deleted=1 WHERE id="+req.params.id);
+
+        //!Add a message to confirm it was deleted
+        res.redirect('/sneakerList');
+
+    }
+
+});
+
+//*Edit Sneaker
+
+router.get('/edit-sneaker/:id', async(req, res, next)=>{
+
+    if(req.isAuthenticated()){
+
+        const connection = await getConnection();
+        const sneaker = await connection.query("SELECT * FROM sneaker WHERE id="+req.params.id);
+        const sizes = await connection.query("SELECT * FROM sizes WHERE sneaker_id="+req.params.id);
+
+        res.render('editSneaker', { sneaker: sneaker[0], sizes: sizes });
+    }else{
+
+        res.redirect('/');
+
+    }
+
+});
+
+router.post('/edit-sneaker/:id', 
+
+    upload.single('image'),
+
+    async (req, res, next)=>{
+
+        const connection = await getConnection();
+        let sneakerQuery = "UPDATE sneaker SET name='"+req.body.name+"', brand='"+req.body.brand+"', price="+req.body.price;
+
+        let sizeUpdate = "UPDATE sizes SET stock="+req.body.stock+" WHERE sneaker_id="+req.params.id+" AND size="+req.body.size;
+
+        if(req.file){
+            sneakerQuery = sneakerQuery + " , image='"+req.file.filename+"'";
+        }
+
+        sneakerQuery = sneakerQuery + " WHERE id="+req.params.id;
+        
+        const sneakerRes = await connection.query(sneakerQuery);
+        const sizesRes = await connection.query(sizeUpdate);
+
+        //! ADD A CONFIRM MESSAGE
+        res.redirect('/sneakerList');
+});
 
 module.exports = router;
