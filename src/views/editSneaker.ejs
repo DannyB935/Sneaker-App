@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Tenis</title>
+</head>
+<body>
+    
+    <nav>
+
+        <ul style="display: inline-block;">
+
+            <li> <a href="/sneakerList"> Logo </a> </li>
+            <li> <a href="/adminList"> Administradores </a> </li>
+            <li> <a href="/sneakerList"> Productos </a> </li>
+            <li> <a href="#"> Salir </a> </li>
+
+        </ul>
+
+    </nav>
+
+    <% if(typeof sneaker != 'undefined' && typeof sizes != 'undefined'){ %>
+
+        <form id="editSneaker" name="editSneakerForm" action="/edit-sneaker/<%= sneaker.id %>" method="POST" enctype="multipart/form-data">
+
+            <p>
+
+                <label for="name">Nombre: </label>
+                <input type="text" name="name" value="<%= sneaker.name %>" placeholder="Escriba el nuevo nombre"/>
+
+            </p>
+
+            <p>
+
+                <label for="brand">Marca: </label>
+                <input type="text" name="brand" value="<%= sneaker.brand %>" placeholder="Escriba la nueva marca"/>
+
+            </p>
+
+            <p>
+
+                <label for="price">Precio: </label>
+                <input type="text" name="price" value="<%= sneaker.price %>" placeholder="Escriba el nuevo precio (Ej. 999.99)"/>
+
+            </p>
+
+            <p>
+
+                <label for="image">Imagen: </label>
+                <input type="file" name="image"/>
+
+            </p>
+
+            <p>
+
+                <label for="name">Tallas: </label></br>
+                
+                <select id="sizeOptions" onchange="setStock();">
+
+                    <option id="firstOp">Seleccione la talla</option>
+                    <% sizes.forEach((size)=>{ %>
+
+                        <option id="<%= size.id %>" value="<%=size.stock%> <%=size.size%>" > <%= size.size %> </option>
+
+                    <% }); %>
+
+                </select><br><br>
+
+                <label for="stock">Unidades: </label>
+                <input type="number" id="stock" name="stock" placeholder="Escriba las unidades de la talla"/>
+
+                <input type="hidden" id="hiddenSize" name="size"/>
+
+            </p>
+
+            <input type="submit" value="Actualizar Datos"/>
+            
+        </form>
+
+    <% } %>
+
+    <script>
+
+        function setStock(){
+
+            //*Disable the first option
+            document.getElementById("sizeOptions").options[0].disabled = true;
+            let stockOp = document.getElementById("sizeOptions").value;
+            //*Split the values because we'll get the stock and size
+            let values = stockOp.split(" ");
+            document.getElementById("stock").value = values[0];
+            document.getElementById("hiddenSize").value = values[1];
+
+        }
+
+    </script>
+
+</body>
+</html>

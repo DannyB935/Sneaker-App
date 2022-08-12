@@ -23,5 +23,19 @@
 
     <a href="/add">Añadir Tenis</a>
 
+    <% if(typeof sneakerList != 'undefined'){ %>
+
+        <% sneakerList.forEach( (sneaker) => { %>
+
+            <p>
+
+                <%= sneaker.name %> --- <a href="/delete-sneaker/<%= sneaker.id %>" >Eliminar</a> --- <a href="/edit-sneaker/<%= sneaker.id %>" >Editar</a>
+
+            </p>
+
+        <% }); %>
+
+    <% } %>
+
 </body>
 </html>

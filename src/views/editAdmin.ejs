@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menú</title>
+    <title>Editar Administrador</title>
 </head>
 <body>
     
@@ -21,15 +21,17 @@
 
     </nav>
 
-    <a href="/addAdmin">Nuevo Admin</a>
+    <% if(typeof admin != 'undefined'){ %>
 
-    <% if(typeof list != 'undefined'){ %>
+        <form id="editAdmin" name="editAdminForm" action="/update-admin/<%= admin.id %>" method="POST">
 
-        <% list.forEach((admin)=>{  %>
-            
-            <p><%= admin.username %> - <a href="/delete-admin/<%= admin.id %>" > <%= admin.id %> </a> -- <a href="/edit-admin/<%= admin.id %>">Editar</a> </p>
+            <input type="text" name="user" placeholder="Escriba el nuevo usuario" value="<%= admin.user %>" />
 
-        <% }); %>
+            <input type="password" name="password" />
+
+            <input type="submit" value="Actualizar" />
+
+        </form>
 
     <% } %>
 
