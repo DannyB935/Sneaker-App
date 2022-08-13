@@ -4,12 +4,15 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/styles.css"/>
     <title>Sneaker App</title>
 </head>
 <body>
     
     <div class="login-page">
 
+        <img src="/logo/sneaker.png" height="25%" width="12.5%"/>
+        
         <h2>Inicia Sesión</h2>
         <form name="login-form" id="login-form" action="/" method="POST">
 
@@ -17,17 +20,17 @@
            
             <% if(typeof errorL != 'undefined'){ %>
 
-                <p> <%= errorL %> </p>
+                <p class="errorLogin"> <%= errorL %> </p>
 
             <% } %>
 
             <input type="password" name="password" placeholder="Escriba la contraseña"/>
 
-            <input type="submit" value="Iniciar Sesión"/>
+            <input type="submit" id="subBttn" value="Iniciar Sesión"/>
 
             <% if(typeof loginErrors != 'undefined' && loginErrors.length > 0){ %>
 
-                <p> <%= loginErrors[0] %> </p>
+                <p class="errorLogin"> <%= loginErrors[0] %> </p>
 
             <% } %>
 
